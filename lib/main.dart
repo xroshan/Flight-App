@@ -7,6 +7,9 @@ import './pages/auth.dart';
 import './pages/navigator.dart';
 import './scoped-models/main.dart';
 
+const PrimaryColor =
+    const Color(0xff212f3d); //declaring the color for the appbar
+
 void main() {
   // debugPaintSizeEnabled = true;
   // debugPaintBaselinesEnabled = true;
@@ -43,10 +46,12 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            brightness: Brightness.light,
-            primarySwatch: Colors.deepOrange,
-            accentColor: Colors.deepPurple,
-            buttonColor: Colors.deepPurple),
+          brightness: Brightness.light,
+          primaryColor: PrimaryColor,
+          accentColor: Colors.blueAccent,
+          buttonColor: Colors.blueAccent,
+          hoverColor: Colors.blueAccent,
+        ),
         //home: AuthPage(),
         routes: {
           '/': (BuildContext context) =>

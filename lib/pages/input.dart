@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_course/models/airport.dart';
 import 'package:flutter_course/scoped-models/main.dart';
 import 'package:flutter_course/widgets/airport_card.dart';
-import 'package:swipedetector/swipedetector.dart';
 
 class InputPage extends StatefulWidget {
   final MainModel model;
@@ -64,7 +63,7 @@ class _InputPageState extends State<InputPage> {
             controller: editingController,
             decoration: InputDecoration(
                 labelText: "Search",
-                hintText: "Search",
+                hintText: "Search Airport names",
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25.0)))),
@@ -95,7 +94,6 @@ class _InputPageState extends State<InputPage> {
                     onPressed: () {
                       setState(() {
                         if (_filteredAirports[index].pilotTrips != 0) {
-                          _filteredAirports[index].pilotTrips--;
                           widget.model
                               .decreasePilotTrip(_filteredAirports[index].id);
                         }
@@ -109,7 +107,6 @@ class _InputPageState extends State<InputPage> {
                     icon: Icon(Icons.add),
                     onPressed: () {
                       setState(() {
-                        _filteredAirports[index].pilotTrips++;
                         widget.model
                             .increasePilotTrip(_filteredAirports[index].id);
                       });

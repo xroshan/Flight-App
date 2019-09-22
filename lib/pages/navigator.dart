@@ -3,10 +3,10 @@ import 'package:flutter_course/scoped-models/main.dart';
 
 import './input.dart';
 import './display.dart';
+import './profile.dart';
 
 class NavigatorPage extends StatelessWidget {
   final MainModel model;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   NavigatorPage(this.model);
 
@@ -15,6 +15,7 @@ class NavigatorPage extends StatelessWidget {
       child: Column(
         children: <Widget>[
           AppBar(
+            centerTitle: true,
             automaticallyImplyLeading: false,
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
@@ -28,20 +29,16 @@ class NavigatorPage extends StatelessWidget {
             leading: Icon(Icons.person),
             title: Text('Profile'),
             onTap: () {
-              print('Prfile');
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfilePage(model)));
             },
           ),
           ListTile(
             leading: Icon(Icons.save),
             title: Text('Save'),
             onTap: () {
+              model.updateTrip();
               Navigator.pop(context);
-              _scaffoldKey.currentState.showSnackBar(
-                SnackBar(
-                  content: Text('Saved!'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
             },
           ),
           Divider(),
@@ -63,7 +60,6 @@ class NavigatorPage extends StatelessWidget {
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
-          key: _scaffoldKey,
           drawer: _buildSideDrawer(context),
           appBar: AppBar(
             centerTitle: true,
@@ -71,10 +67,10 @@ class NavigatorPage extends StatelessWidget {
             bottom: TabBar(
               tabs: <Widget>[
                 Tab(
-                  text: 'Input',
+                  text: 'Airports',
                 ),
                 Tab(
-                  text: 'Display',
+                  text: 'Recommendations',
                 )
               ],
             ),

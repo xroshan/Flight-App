@@ -13,7 +13,9 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   Widget _signInButton(MainModel model) {
-    return OutlineButton(
+    return FlatButton(
+      color: Colors.white,
+      hoverColor: Colors.black87,
       splashColor: Colors.grey,
       onPressed: () {
         model.signInWithGoogle().whenComplete(() {
@@ -21,29 +23,17 @@ class _AuthPageState extends State<AuthPage> {
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image(
-              image: AssetImage("assets/google_logo.png"),
-              height: 35.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                'Sign in with Google',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey,
-                ),
-              ),
-            )
-          ],
+      //highlightElevation: 0,
+      //borderSide: BorderSide(color: Colors.white, style: BorderStyle.solid),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(70, 15, 70, 15),
+        child: Text(
+          'Log in',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff213148),
+          ),
         ),
       ),
     );
@@ -54,7 +44,7 @@ class _AuthPageState extends State<AuthPage> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: Colors.white,
+          color: Color(0xff213148),
           child: Center(
             child: ScopedModelDescendant<MainModel>(
               builder: (BuildContext context, Widget child, MainModel model) {
@@ -62,11 +52,22 @@ class _AuthPageState extends State<AuthPage> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    FlutterLogo(
-                      size: 150,
+                    Image.asset(
+                      'assets/fore.jpg',
+                      width: 180,
+                      height: 180,
+                    ),
+                    Text(
+                      'ForeFlight\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\tChallenge',
+                      style: TextStyle(
+                        fontSize: 44,
+                        fontFamily: 'Open Sans',
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white70,
+                      ),
                     ),
                     SizedBox(
-                      height: 50,
+                      height: 120,
                     ),
                     _signInButton(model),
                   ],

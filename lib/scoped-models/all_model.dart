@@ -13,6 +13,7 @@ mixin AllModel on Model {
   User _authenticatedUser;
   bool isLoading = false;
   List<Airport> _airports = [];
+  FirebaseUser user;
 }
 
 mixin AirportModel on AllModel {
@@ -21,8 +22,11 @@ mixin AirportModel on AllModel {
   }
 
   Future<void> fetchAirportData() async {
-    QuerySnapshot qsnap =
-        await Firestore.instance.collection('airportData').getDocuments();
+    QuerySnapshot qsnap = await Firestore.instance
+        .collection('airportData')
+        .orderBy('id')
+        .limit(20)
+        .getDocuments();
     List qlist = qsnap.documents.toList();
 
     qlist.forEach((airportData) {
@@ -41,9 +45,29 @@ mixin AirportModel on AllModel {
         numberHotels: int.tryParse(airportData['number_hotels']) ?? 0,
         numberMaintenance: int.tryParse(airportData['number_maintenance']) ?? 0,
         numberRestaurants: int.tryParse(airportData['number_restaurants']) ?? 0,
+        pilotTrips: _authenticatedUser.tripInfo.length == 0
+            ? 0
+            : _authenticatedUser.tripInfo[airportData['id'] - 1],
       );
       _airports.add(airport);
     });
+  }
+
+  Future<void> updateTrip() async {
+    _airports.forEach((ap) {
+      if (_authenticatedUser.tripInfo.length < ap.id) {
+        _authenticatedUser.tripInfo.add(ap.pilotTrips);
+      } else {
+        _authenticatedUser.tripInfo[ap.id - 1] = ap.pilotTrips;
+      }
+    });
+
+    DocumentReference dref =
+        Firestore.instance.collection('users').document(user.uid);
+    final Map<String, dynamic> data = {
+      'tripInfo': _authenticatedUser.tripInfo,
+    };
+    await dref.setData(data);
   }
 
   void increasePilotTrip(int id) {
@@ -61,12 +85,32 @@ mixin UserModel on AllModel {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  User get user {
+  User get auser {
     return _authenticatedUser;
   }
 
   PublishSubject<bool> get userSubject {
     return _userSubject;
+  }
+
+  int totalTrips() {
+    int res = 0;
+    _authenticatedUser.tripInfo.forEach((trip) {
+      res += trip;
+    });
+    return res;
+  }
+
+  Future<void> fetchTrip() async {
+    DocumentReference dref =
+        Firestore.instance.collection('users').document(user.uid);
+
+    dref.get().then((doc) {
+      if (doc.exists) {
+        List<dynamic> temp = doc['tripInfo'];
+        _authenticatedUser.tripInfo = temp.cast<int>().toList();
+      }
+    });
   }
 
   Future<String> signInWithGoogle() async {
@@ -79,8 +123,7 @@ mixin UserModel on AllModel {
       idToken: googleSignInAuthentication.idToken,
     );
 
-    final FirebaseUser user =
-        (await _auth.signInWithCredential(credential)).user;
+    user = (await _auth.signInWithCredential(credential)).user;
 
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
@@ -96,7 +139,7 @@ mixin UserModel on AllModel {
       token: 'dummy',
     );
     _userSubject.add(true);
-
+    await fetchTrip();
     notifyListeners();
     return 'signInWithGoogle succeeded: $user';
   }
