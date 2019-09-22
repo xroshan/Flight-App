@@ -7,6 +7,7 @@ class User {
   final String token;
   List<int> tripInfo = [];
   int totalTrips = 0;
+  List<int> recommendedAirports = [];
 
   User({
     @required this.id,

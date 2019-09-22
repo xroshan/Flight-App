@@ -79,7 +79,7 @@ class NavigatorPage extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
               InputPage(model),
-              DisplayPage(),
+              DisplayPage(model),
             ],
           ),
         ),

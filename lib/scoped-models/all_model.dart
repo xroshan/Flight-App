@@ -25,7 +25,7 @@ mixin AirportModel on AllModel {
     QuerySnapshot qsnap = await Firestore.instance
         .collection('airportData')
         .orderBy('id')
-        .limit(20)
+        .limit(100)
         .getDocuments();
     List qlist = qsnap.documents.toList();
 
@@ -45,7 +45,7 @@ mixin AirportModel on AllModel {
         numberHotels: int.tryParse(airportData['number_hotels']) ?? 0,
         numberMaintenance: int.tryParse(airportData['number_maintenance']) ?? 0,
         numberRestaurants: int.tryParse(airportData['number_restaurants']) ?? 0,
-        pilotTrips: _authenticatedUser.tripInfo.length == 0
+        pilotTrips: _authenticatedUser.tripInfo.length < airportData['id']
             ? 0
             : _authenticatedUser.tripInfo[airportData['id'] - 1],
       );
@@ -110,6 +110,16 @@ mixin UserModel on AllModel {
         List<dynamic> temp = doc['tripInfo'];
         _authenticatedUser.tripInfo = temp.cast<int>().toList();
       }
+    });
+
+    //get dummy recommended airports
+    dref = Firestore.instance
+        .collection('recommendations')
+        .document('CcnACuwtmHbZAj34OasB');
+
+    dref.get().then((doc) {
+      List<dynamic> temp = doc['recommendedAirports'];
+      _authenticatedUser.recommendedAirports = temp.cast<int>().toList();
     });
   }
 
